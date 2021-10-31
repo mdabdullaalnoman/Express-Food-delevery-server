@@ -51,7 +51,6 @@ async function run() {
       const purchesData = req.body;
       const result = await purchesFoodCollection.insertOne(purchesData)
       res.send(result)
-      console.log(result);
     })
 
     // purched all foods ------------------------------
