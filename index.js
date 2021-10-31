@@ -22,6 +22,7 @@ async function run() {
 
     const database = client.db("express_food_delivery");
     const foodCollection = database.collection("foods");
+    const purchesFoodCollection = database.collection("purchesFood");
 
     // post api for foods-------------------------- 
     app.post('/foods', async (req, res) => {
@@ -37,15 +38,35 @@ async function run() {
       res.send(arrayOfFood);
     });
 
+    // get single food api ----------------------------
+    app.get('/foods/:id' , async (req , res) => {
+      const singleProductId = req.params.id;
+      const query = {_id: objectId(singleProductId)};
+      const singleProduct =await foodCollection.findOne(query);
+      res.send(singleProduct);
+    })
+    
+    // single food  ---------------------------------
+    app.post('/purches' , async (req , res) => {
+      const purchesData = req.body;
+      const result = await purchesFoodCollection.insertOne(purchesData)
+      res.send(result)
+      console.log(result);
+    })
+
+    // purched all foods ------------------------------
+    app.get ('/purches' , async (req , res) => {
+      const purchesAllFoodData = purchesFoodCollection.find({});
+      const result = await purchesAllFoodData.toArray();
+      res.send(result);
+    })
+
     // delete single food -----------------------------
     app.delete('/foods/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: objectId(id) };
-      console.log(query);
       const result = await foodCollection.deleteOne(query);
-      console.log(result);
       res.send(result);
-      
     })
 
 
@@ -66,4 +87,4 @@ app.get('/', (req, res) => {
 // listening port -----------------------------------------
 app.listen(port, () => {
   console.log('listening port', port);
-})
+});
